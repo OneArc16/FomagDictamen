@@ -14,6 +14,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum RolUsuario {
+  ADMISIONISTA
+  MEDICO
+}
+
 model Usuario {
   id         String     @id @default(cuid())
   correo     String     @unique
@@ -21,9 +26,30 @@ model Usuario {
   contrasena String
   rol        RolUsuario
   creadoEn   DateTime   @default(now())
+
+  // Relaciones
+  profesores Profesor[]
+  dictamenes Dictamen[]
 }
 
-enum RolUsuario {
-  ADMISIONISTA
-  MEDICO
+model Profesor {
+  id         String     @id @default(cuid())
+  nombre     String
+  cedula     String     @unique
+  telefono   String?
+  creadoPor  Usuario    @relation(fields: [creadoPorId], references: [id])
+  creadoPorId String
+
+  // Relaciones
+  dictamenes Dictamen[]
+}
+
+model Dictamen {
+  id           String     @id @default(cuid())
+  contenido    String
+  creadoEn     DateTime   @default(now())
+  profesor     Profesor   @relation(fields: [profesorId], references: [id])
+  profesorId   String
+  creadoPor    Usuario    @relation(fields: [creadoPorId], references: [id])
+  creadoPorId  String
 }
