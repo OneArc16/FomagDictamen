@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/router'
 import axios from 'axios'
+import jwt_decode from 'jwt-decode'
 
 export default function LoginPage() {
   const [correo, setCorreo] = useState('')
@@ -19,14 +20,15 @@ export default function LoginPage() {
       })
 
       const { token } = response.data
-      localStorage.setItem('token', token)
+      localStorage.setItem('token', token);
+
 
       // Decodificar el token para obtener el rol
       const payload = JSON.parse(atob(token.split('.')[1]))
       const rol = payload.rol
 
       if (rol === 'ADMISIONISTA') {
-        router.push('/admision')
+        router.push('/admisionista')
       } else if (rol === 'MEDICO') {
         router.push('/medico')
       } else {

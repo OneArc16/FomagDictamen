@@ -36,20 +36,27 @@ model Profesor {
   id         String     @id @default(cuid())
   nombre     String
   cedula     String     @unique
+  fechaNacimiento  DateTime
   telefono   String?
+  cargo        String
+  institucion  String
+  municipio    String
+  departamento String
+
   creadoPor  Usuario    @relation(fields: [creadoPorId], references: [id])
   creadoPorId String
 
   // Relaciones
-  dictamenes Dictamen[]
+  dictamen Dictamen[]
 }
 
 model Dictamen {
-  id           String     @id @default(cuid())
+  id           String   @id @default(uuid())
   contenido    String
-  creadoEn     DateTime   @default(now())
-  profesor     Profesor   @relation(fields: [profesorId], references: [id])
-  profesorId   String
-  creadoPor    Usuario    @relation(fields: [creadoPorId], references: [id])
+  creadoPor    Usuario  @relation(fields: [creadoPorId], references: [id])
   creadoPorId  String
+  profesor     Profesor @relation(fields: [profesorId], references: [id])
+  profesorId   String
+  firmado      Boolean  @default(false) // <- clave para filtrar
+  creadoEn     DateTime @default(now())
 }
