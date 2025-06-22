@@ -36,10 +36,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       {
         sub: usuario.id,
         correo: usuario.correo,
+        nombre: usuario.nombre,
         rol: usuario.rol,
       },
       JWT_SECRET,
-      { expiresIn: '10s' }
+      { expiresIn: '1h' }
     );
 
     return res.status(200).json({ token, usuario: { id: usuario.id, rol: usuario.rol, correo: usuario.correo } });

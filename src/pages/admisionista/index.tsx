@@ -29,6 +29,7 @@ export default function AdmisionistaDashboard() {
 
     try {
       const decoded: any = jwt_decode(token);
+      console.log('Token decodificado:', decoded);
       setUsuario({ nombre: decoded.nombre });
     } catch (error) {
       console.error('Token inválido', error);
