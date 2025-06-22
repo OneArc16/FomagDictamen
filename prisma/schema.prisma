@@ -33,22 +33,24 @@ model Usuario {
 }
 
 model Profesor {
-  id         String     @id @default(cuid())
-  nombre     String
-  cedula     String     @unique
+  id               String    @id @default(uuid())
+  nombre           String
+  apellido         String
+  cedula           String    @unique
+  correo           String
+  telefono         String?
   fechaNacimiento  DateTime
-  telefono   String?
-  cargo        String
-  institucion  String
-  municipio    String
-  departamento String
-
-  creadoPor  Usuario    @relation(fields: [creadoPorId], references: [id])
-  creadoPorId String
-
-  // Relaciones
-  dictamen Dictamen[]
+  cargo            String
+  institucion      String
+  municipio        String
+  departamento     String
+  genero           Genero
+  creadoPor        Usuario   @relation(fields: [creadoPorId], references: [id])
+  creadoPorId      String
+  dictamen         Dictamen[]
 }
+
+
 
 model Dictamen {
   id           String   @id @default(uuid())
@@ -59,4 +61,10 @@ model Dictamen {
   profesorId   String
   firmado      Boolean  @default(false) // <- clave para filtrar
   creadoEn     DateTime @default(now())
+}
+
+enum Genero {
+  MASCULINO
+  FEMENINO
+  OTRO
 }

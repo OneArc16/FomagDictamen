@@ -35,7 +35,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const token = jwt.sign(
       {
         sub: usuario.id,
-        correo: usuario.correo,
         nombre: usuario.nombre,
         rol: usuario.rol,
       },
@@ -43,7 +42,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       { expiresIn: '1h' }
     );
 
-    return res.status(200).json({ token, usuario: { id: usuario.id, rol: usuario.rol, correo: usuario.correo } });
+    return res.status(200).json({ token, usuario: { id: usuario.id, rol: usuario.rol} });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ mensaje: 'Error interno del servidor' });
