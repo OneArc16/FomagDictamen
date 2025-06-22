@@ -25,24 +25,37 @@ export default function CrearProfesor() {
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    const token = localStorage.getItem('token')
+  e.preventDefault()
+  const token = localStorage.getItem('token')
 
-    try {
-      await axios.post('/api/profesores', form, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      toast.success('✅ ¡Profesor creado con éxito!')
-      setTimeout(() => {
-        router.push('/admisionista')
-      }, 3500)
-    } catch (err) {
-      console.error(err)
-      toast.error('❌ Hubo un error al crear el profesor')
+  const crearProfesor = axios.post('/api/profesores', form, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+
+  toast.promise(
+    crearProfesor,
+    {
+      loading: 'Creando profesor...',
+      success: '✅ ¡Profesor creado con éxito!',
+      error: '❌ Hubo un error al crear el profesor',
+    },
+    {
+      position: 'top-right',
     }
+  )
+
+  try {
+    await crearProfesor
+    setTimeout(() => {
+      router.push('/admisionista')
+    }, 1500)
+  } catch (err) {
+    console.error('Error en la creación del profesor:', err)
+    // el toast de error ya lo maneja toast.promise
   }
+}
 
   return (
     <div className="min-h-screen px-4 py-10 bg-gray-50 sm:px-6 lg:px-8">
