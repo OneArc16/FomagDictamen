@@ -31,6 +31,8 @@ export default function LoginPage() {
         router.push('/admisionista')
       } else if (rol === 'MEDICO') {
         router.push('/medico')
+      }else if (rol === 'ADMINISTRADOR') {
+        router.push('/admin')
       } else {
         setError('Rol no reconocido')
       }

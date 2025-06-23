@@ -74,7 +74,7 @@ export default function MedicoDashboard() {
               <p className="text-sm text-blue-700">Ver y llenar los dictámenes asignados.</p>
             </div>
           </Link>
-          <Link href="/medico/historial">
+          <Link href="/medico/historial/historial">
             <div className="p-6 bg-green-100 border border-green-400 cursor-pointer rounded-xl hover:shadow">
               <h3 className="text-lg font-bold text-green-800">Historial</h3>
               <p className="text-sm text-green-700">Consultar dictámenes realizados previamente.</p>
