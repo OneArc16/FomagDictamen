@@ -54,14 +54,17 @@ model Profesor {
 
 model Dictamen {
   id           String   @id @default(uuid())
-  contenido    String
-  creadoPor    Usuario  @relation(fields: [creadoPorId], references: [id])
-  creadoPorId  String
+  contenido    String?
+  creadoEn     DateTime @default(now())
+  firmado      Boolean  @default(false)
+  estado       String   @default("PENDIENTE") // ⬅️ Agregado
   profesor     Profesor @relation(fields: [profesorId], references: [id])
   profesorId   String
-  firmado      Boolean  @default(false) // <- clave para filtrar
-  creadoEn     DateTime @default(now())
+  creadoPor    Usuario  @relation(fields: [creadoPorId], references: [id])
+  creadoPorId  String
 }
+
+
 
 enum Genero {
   MASCULINO

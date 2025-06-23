@@ -92,7 +92,7 @@ export default function AdmisionistaDashboard() {
       </header>
 
       <main className="p-6 text-gray-600">
-        <h1 className="mb-4 text-2xl font-semibold">Bienvenido, {usuario?.nombre}</h1>
+        <h1 className="mb-4 text-2xl font-semibold">Bienvenido a Aurora, {usuario?.nombre}</h1>
         <p>Selecciona una opción del menú para comenzar.</p>
       </main>
     </div>

@@ -1,71 +1,84 @@
-import { useEffect, useState } from 'react';
-import axios from 'axios';
+import { useEffect, useState } from 'react'
+import axios from 'axios'
+import toast from 'react-hot-toast'
+import RegresarBtn from '../../../components/RegresarBtn'
+import Link from 'next/link'
 
-type Dictamen = {
-  id: string;
-  contenido: string;
-  creadoEn: string;
-  profesor: {
-    nombre: string;
-    cedula: string;
-  };
-};
+export default function DictamenesPendientes() {
+  const [dictamenes, setDictamenes] = useState<any[]>([])
+  const [busqueda, setBusqueda] = useState('')
 
-export default function DictamenesPage() {
-  const [dictamenes, setDictamenes] = useState<Dictamen[]>([]);
-  const [cargando, setCargando] = useState(true);
+  const cargarDictamenes = async () => {
+    try {
+      const token = localStorage.getItem('token')
+      const { data } = await axios.get('/api/dictamenes/pendientes', {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      setDictamenes(data)
+    } catch (error) {
+      toast.error('❌ Error al cargar los dictámenes')
+    }
+  }
+
+  const dictamenesFiltrados = dictamenes.filter((d) =>
+    d.profesor.cedula.includes(busqueda)
+  )
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        const response = await axios.get('/api/admisionista/dictamenes', {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        setDictamenes(response.data);
-      } catch (error) {
-        console.error('Error al obtener dictámenes', error);
-      } finally {
-        setCargando(false);
-      }
-    };
-
-    fetchData();
-  }, []);
+    cargarDictamenes()
+  }, [])
 
   return (
-    <div className="min-h-screen p-6 bg-gray-50">
-      <h1 className="mb-4 text-2xl font-bold text-blue-700">📄 Dictámenes Pendientes</h1>
-
-      {cargando ? (
-        <p className="text-gray-600">Cargando dictámenes...</p>
-      ) : dictamenes.length === 0 ? (
-        <p className="text-gray-500">No hay dictámenes pendientes.</p>
-      ) : (
-        <div className="grid gap-4">
-          {dictamenes.map((dictamen) => (
-            <div
-              key={dictamen.id}
-              className="flex items-center justify-between p-4 bg-white shadow-md rounded-xl"
-            >
-              <div>
-                <p className="font-semibold text-gray-800">
-                  Profesor: {dictamen.profesor.nombre} ({dictamen.profesor.cedula})
-                </p>
-                <p className="text-sm text-gray-500">
-                  Fecha: {new Date(dictamen.creadoEn).toLocaleDateString()}
-                </p>
-              </div>
-              <button
-                className="px-4 py-2 text-sm text-white bg-blue-600 rounded-md hover:bg-blue-700"
-                onClick={() => window.print()} // ← puedes reemplazar con lógica real
-              >
-                Imprimir
-              </button>
-            </div>
-          ))}
+    <div className="min-h-screen p-6 bg-gray-100">
+      <div className="max-w-6xl p-6 mx-auto bg-white shadow-xl rounded-2xl">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-2xl font-bold text-gray-800">Dictámenes Pendientes</h2>
+          <RegresarBtn />
         </div>
-      )}
+
+        <input
+          type="text"
+          placeholder="Buscar por cédula..."
+          value={busqueda}
+          onChange={(e) => setBusqueda(e.target.value)}
+          className="w-full p-2 mb-4 border rounded-lg"
+        />
+
+        <table className="w-full text-left border table-auto">
+          <thead className="bg-gray-200">
+            <tr>
+              <th className="px-4 py-2">Nombre</th>
+              <th className="px-4 py-2">Cédula</th>
+              <th className="px-4 py-2">Fecha</th>
+              <th className="px-4 py-2">Estado</th>
+              <th className="px-4 py-2">Acción</th>
+            </tr>
+          </thead>
+          <tbody>
+            {dictamenesFiltrados.length > 0 ? (
+              dictamenesFiltrados.map((d) => (
+                <tr key={d.id} className="border-t">
+                  <td className="px-4 py-2">{d.profesor.nombre} {d.profesor.apellido}</td>
+                  <td className="px-4 py-2">{d.profesor.cedula}</td>
+                  <td className="px-4 py-2">{new Date(d.creadoEn).toLocaleDateString()}</td>
+                  <td className="px-4 py-2">{d.estado}</td>
+                  <td className="px-4 py-2">
+                    <Link href={`/admisionista/dictamenes/${d.id}`}>
+                      <button className="px-4 py-1 text-white bg-blue-600 rounded hover:bg-blue-700">
+                        Ver
+                      </button>
+                    </Link>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={5} className="px-4 py-4 text-center text-gray-500">No hay dictámenes pendientes</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
-  );
+  )
 }
